@@ -34,11 +34,17 @@ The space-saving table view, perfect for tracking many teams at once.
 
 ### Method 1: Via HACS (Recommended)
 
-1.  Open **HACS** in Home Assistant.
-2.  Click the **three dots** in the top right corner and select **Custom repositories**.
-3.  Add the URL of your repository: `https://github.com/ChamesBont/Compact-Team-Tracker-Card/`
-4.  Select **Lovelace** as the category.
-5.  Click **Add** and then install the card.
+Use this button to open the repository directly in HACS:
+
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=ChamesBont&repository=DCompact-Team-Tracker-Card&category=frontend)
+
+*OR* follow these manual steps:
+
+1. Open **HACS** in Home Assistant.
+2. Click the **three dots** in the top right corner and select **Custom repositories**.
+3. Add the URL of this repository: `https://github.com/ChamesBont/Compact-Team-Tracker-Card`
+4. Select **Lovelace** as the category.
+5. Click **Add** and then install the card.
 
 ### Method 2: Manual Installation
 
