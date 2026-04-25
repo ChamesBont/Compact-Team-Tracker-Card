@@ -1,4 +1,4 @@
-console.log("!!! TEAM TRACKER v2.0.5 beta 2 !!!");
+console.log("!!! TEAM TRACKER v2.0.5-beta.3 !!!");
 
 const LitElement = Object.getPrototypeOf(customElements.get("ha-panel-lovelace"));
 const html = LitElement.prototype.html;
@@ -7,41 +7,45 @@ const css = LitElement.prototype.css;
 // --- ÜBERSETZUNGEN ---
 const LANG = {
   de: {
-    manage_teams: "Teams verwalten:",
+    manage_teams: "Teams verwalten",
     add_team: "Neues Team hinzufügen...",
-    priority_label: "Priorität:",
+    priority_label: "Priorität",
     prio_picker: "Haupt-Sensor auswählen",
-    prio_help: "Wähle deinen Haupt-Sensor aus. Dieses Team wird bevorzugt, falls mehrere Spiele zur exakt gleichen Zeit starten.",
-    options_label: "Optionen:",
-    next_only: "Nur das nächste/aktuelle Spiel anzeigen",
+    prio_help: "Dieses Team wird bevorzugt, falls mehrere Spiele zur exakt gleichen Zeit starten.",
+    layout_section: "Erscheinungsbild",
     ultra_layout: "Ultra-Compact-Layout",
     show_league: "Liga-Informationen anzeigen",
+    match_info_section: "Spiel-Informationen",
+    next_only: "Nur das nächste/aktuelle Spiel anzeigen",
     hide_finished: "Beendete Spiele ausblenden",
-    hide_finished_help: "Versteckt Spiele vom Vortag automatisch um Mitternacht, damit nur der aktuelle Spieltag sichtbar bleibt.",
+    hide_finished_help: "Versteckt Spiele vom Vortag automatisch um Mitternacht.",
     show_sun: "Statistiken (S-U-N) anzeigen",
+    live_details_section: "Live-Details",
     show_last_play: "Letzten Spielzug anzeigen",
-    last_play_marquee: "Lauftext für letzten Spielzug",
     last_play_help: "Zeigt bei Live-Spielen eine Textzusammenfassung des letzten Spielzugs an.",
+    last_play_marquee: "Lauftext für letzten Spielzug nutzen",
     scheduled: "Geplant",
     finished: "Beendet",
     live: "LIVE"
   },
   en: {
-    manage_teams: "Manage Teams:",
+    manage_teams: "Manage Teams",
     add_team: "Add new team...",
-    priority_label: "Priority:",
+    priority_label: "Priority",
     prio_picker: "Select main sensor",
-    prio_help: "Select your main sensor. This team will be preferred if multiple games start at the exact same time.",
-    options_label: "Options:",
-    next_only: "Show only next/current match",
+    prio_help: "This team will be preferred if multiple games start at the exact same time.",
+    layout_section: "Appearance",
     ultra_layout: "Ultra-compact layout",
     show_league: "Show league information",
+    match_info_section: "Match Information",
+    next_only: "Show only next/current match",
     hide_finished: "Hide finished matches",
-    hide_finished_help: "Automatically hides matches from previous days at midnight to keep the dashboard clean.",
+    hide_finished_help: "Automatically hides matches from previous days at midnight.",
     show_sun: "Show statistics (W-D-L)",
+    live_details_section: "Live Details",
     show_last_play: "Show last play",
-    last_play_marquee: "Use marquee for last play",
     last_play_help: "Displays a text summary of the most recent play during live games.",
+    last_play_marquee: "Use marquee for last play",
     scheduled: "Scheduled",
     finished: "Finished",
     live: "LIVE"
@@ -68,31 +72,42 @@ class CompactTeamTrackerEditor extends LitElement {
 
     return html`
       <div class="card-config">
-        <div class="label">${t.manage_teams}</div>
-        ${this._config.entities.map((ent, idx) => html`
-          <div class="entity-row" key="${idx}">
-            <ha-entity-picker .label="${`Team ${idx + 1}`}" .hass="${this.hass}" .value="${ent}" .includeDomains="${["sensor"]}" @value-changed="${(ev) => this._entityChanged(idx, ev)}" allow-custom-entity></ha-entity-picker>
-            <ha-icon icon="mdi:delete" class="delete-icon" @click="${() => this._removeEntity(idx)}"></ha-icon>
-          </div>
-        `)}
-        <ha-entity-picker .label="${t.add_team}" .hass="${this.hass}" .includeDomains="${["sensor"]}" @value-changed="${this._addEntity}"></ha-entity-picker>
-        
-        <div class="prio-section">
-          <div class="label">${t.priority_label}</div>
+        <div class="section-title">${t.manage_teams}</div>
+        <div class="config-box">
+          ${this._config.entities.map((ent, idx) => html`
+            <div class="entity-row" key="${idx}">
+              <ha-entity-picker .label="${`Team ${idx + 1}`}" .hass="${this.hass}" .value="${ent}" .includeDomains="${["sensor"]}" @value-changed="${(ev) => this._entityChanged(idx, ev)}" allow-custom-entity></ha-entity-picker>
+              <ha-icon icon="mdi:delete" class="delete-icon" @click="${() => this._removeEntity(idx)}"></ha-icon>
+            </div>
+          `)}
+          <ha-entity-picker .label="${t.add_team}" .hass="${this.hass}" .includeDomains="${["sensor"]}" @value-changed="${this._addEntity}"></ha-entity-picker>
+        </div>
+
+        <div class="section-title">${t.priority_label}</div>
+        <div class="config-box">
           <ha-entity-picker .label="${t.prio_picker}" .hass="${this.hass}" .value="${this._config.priority_entity || ''}" .includeDomains="${["sensor"]}" @value-changed="${this._prioChanged}" allow-custom-entity></ha-entity-picker>
           <p class="help-text">${t.prio_help}</p>
-          
-          <div class="label">${t.options_label}</div>
-          <div class="switch-row"><ha-switch .checked="${this._config.show_next_only === true}" .configValue="${"show_next_only"}" @change="${this._toggleOption}"></ha-switch><span>${t.next_only}</span></div>
+        </div>
+
+        <div class="section-title">${t.layout_section}</div>
+        <div class="config-box">
           <div class="switch-row"><ha-switch .checked="${this._config.layout === 'ultra'}" .configValue="${"layout"}" @change="${this._toggleLayout}"></ha-switch><span>${t.ultra_layout}</span></div>
           <div class="switch-row"><ha-switch .checked="${this._config.show_league !== false}" .configValue="${"show_league"}" @change="${this._toggleOption}"></ha-switch><span>${t.show_league}</span></div>
+        </div>
+
+        <div class="section-title">${t.match_info_section}</div>
+        <div class="config-box">
+          <div class="switch-row"><ha-switch .checked="${this._config.show_next_only === true}" .configValue="${"show_next_only"}" @change="${this._toggleOption}"></ha-switch><span>${t.next_only}</span></div>
           <div class="switch-row"><ha-switch .checked="${this._config.only_today !== false}" .configValue="${"only_today"}" @change="${this._toggleOption}"></ha-switch><span>${t.hide_finished}</span></div>
           <p class="help-text">${t.hide_finished_help}</p>
           <div class="switch-row"><ha-switch .checked="${this._config.show_record === true}" .configValue="${"show_record"}" @change="${this._toggleOption}"></ha-switch><span>${t.show_sun}</span></div>
-          
+        </div>
+
+        <div class="section-title">${t.live_details_section}</div>
+        <div class="config-box">
           <div class="switch-row"><ha-switch .checked="${this._config.show_last_play !== false}" .configValue="${"show_last_play"}" @change="${this._toggleOption}"></ha-switch><span>${t.show_last_play}</span></div>
-          <div class="switch-row"><ha-switch .checked="${this._config.last_play_marquee === true}" .configValue="${"last_play_marquee"}" @change="${this._toggleOption}"></ha-switch><span>${t.last_play_marquee}</span></div>
           <p class="help-text">${t.last_play_help}</p>
+          <div class="switch-row"><ha-switch .checked="${this._config.last_play_marquee === true}" .configValue="${"last_play_marquee"}" @change="${this._toggleOption}"></ha-switch><span>${t.last_play_marquee}</span></div>
         </div>
       </div>
     `;
@@ -114,14 +129,15 @@ class CompactTeamTrackerEditor extends LitElement {
   _updateConfig(newConfig) { this.dispatchEvent(new CustomEvent("config-changed", { detail: { config: newConfig }, bubbles: true, composed: true })); }
   
   static get styles() { return css`
-    .card-config { padding: 10px; } 
-    .label { font-weight: bold; margin: 10px 0; display: block; } 
+    .card-config { padding: 4px; }
+    .section-title { font-weight: bold; font-size: 14px; margin: 16px 0 8px 0; color: var(--secondary-text-color); text-transform: uppercase; letter-spacing: 1px; }
+    .config-box { background: rgba(128, 128, 128, 0.05); padding: 12px; border-radius: 8px; border: 1px solid rgba(128, 128, 128, 0.1); }
     .entity-row { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; } 
     ha-entity-picker { flex-grow: 1; } 
     .delete-icon { cursor: pointer; color: var(--error-color); } 
-    .prio-section { margin-top: 20px; padding-top: 15px; border-top: 1px solid var(--divider-color); } 
-    .switch-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 12px; font-size: 14px; }
-    .help-text { font-size: 11px; opacity: 0.6; margin: 4px 0 12px 0; line-height: 1.3; font-style: italic; }
+    .switch-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px; font-size: 14px; }
+    .switch-row:last-child { margin-bottom: 0; }
+    .help-text { font-size: 12px; opacity: 0.6; margin: 4px 0 8px 0; line-height: 1.2; font-style: italic; }
   `; }
 }
 customElements.define("compact-team-tracker-editor", CompactTeamTrackerEditor);
@@ -268,7 +284,7 @@ class CompactTeamTracker extends LitElement {
       ha-card { overflow: hidden; padding-bottom: 8px; }
       .spacer { height: 1px; background: var(--divider-color); opacity: 0.15; margin: 4px 16px; }
       .header-bg { background: rgba(255, 255, 255, 0.08); padding: 8px 12px; margin-bottom: 8px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
-      .header { display: flex; justify-content: space-between; align-items: center; font-size: 10px; font-weight: bold; }
+      .header { display: flex; justify-content: space-between; align-items: center; font-size: 10px; font-weight: bold; min-height: 20px; }
       .header.no-league { justify-content: center; }
       .league-box { display: flex; align-items: center; }
       .league-logo { width: 18px; height: 18px; object-fit: contain; margin-right: 6px; }
@@ -289,20 +305,10 @@ class CompactTeamTracker extends LitElement {
       .kickoff-exact { font-size: 10px; opacity: 0.6; }
       .info-footer { margin-top: 10px; padding: 8px 12px 0; border-top: 1px solid var(--divider-color); text-align: center; font-size: 10px; opacity: 0.7; }
       .venue { font-weight: bold; margin-bottom: 4px; }
-      
       .play-container { width: 100%; overflow: hidden; white-space: nowrap; position: relative; margin-top: 4px; }
       .play { display: inline-block; color: var(--primary-text-color); font-style: normal; }
-      
-      .marquee .play {
-        padding-left: 100%;
-        animation: marquee 15s linear infinite;
-      }
-      
-      @keyframes marquee {
-        0% { transform: translate(0, 0); }
-        100% { transform: translate(-100%, 0); }
-      }
-
+      .marquee .play { padding-left: 100%; animation: marquee 15s linear infinite; }
+      @keyframes marquee { 0% { transform: translate(0, 0); } 100% { transform: translate(-100%, 0); } }
       .ultra-wrapper { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; }
       .ultra-team { display: flex; align-items: center; gap: 8px; flex: 1; }
       .ultra-team.right { justify-content: flex-end; }
