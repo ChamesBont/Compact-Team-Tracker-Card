@@ -42,6 +42,15 @@ Use this button to open the repository directly in HACS:
 
 [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=ChamesBont&repository=compact-team-tracker-card&category=frontend)
 
+or add it manually:
+
+1. Click on the 3 dots in the top right corner.
+2. Select "Custom repositories"
+3. Add the URL to the repository.
+    * URL: `https://github.com/ChamesBont/compact-team-tracker-card/`
+    * Type: `Dashboard`
+4. Click the "ADD" button.
+
 ### Method 2: Manual Installation
 
 1.  Download the `compact-team-tracker-card.js` file from this repository.
