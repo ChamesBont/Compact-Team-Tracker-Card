@@ -59,7 +59,3 @@ The card features a full **Graphic User Interface (GUI)** editor. No YAML coding
 ## 📋 Requirements
 
 This card is a frontend display and requires the [Team Tracker Integration](https://github.com/vasqued2/ha-teamtracker) to be installed via HACS first. 
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
