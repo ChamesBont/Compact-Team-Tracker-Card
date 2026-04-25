@@ -1,4 +1,4 @@
-console.log("!!! TEAM TRACKER v2.0.2 GELADEN !!!");
+console.log("!!! TEAM TRACKER v2.0.3 !!!");
 
 const LitElement = Object.getPrototypeOf(customElements.get("ha-panel-lovelace"));
 const html = LitElement.prototype.html;
@@ -18,7 +18,6 @@ const LANG = {
     show_league: "Liga-Informationen anzeigen",
     hide_finished: "Beendete Spiele ausblenden",
     hide_finished_help: "Versteckt Spiele vom Vortag automatisch um Mitternacht, damit nur der aktuelle Spieltag sichtbar bleibt.",
-    show_scorers: "Torschützen auflisten",
     show_sun: "Statistiken (S-U-N) anzeigen",
     show_last_play: "Letzten Spielzug anzeigen",
     last_play_help: "Zeigt bei Live-Spielen (z.B. NFL) eine kurze Textzusammenfassung des letzten Spielzugs an.",
@@ -38,7 +37,6 @@ const LANG = {
     show_league: "Show league information",
     hide_finished: "Hide finished matches",
     hide_finished_help: "Automatically hides matches from previous days at midnight to keep the dashboard clean.",
-    show_scorers: "List scorers",
     show_sun: "Show statistics (W-D-L)",
     show_last_play: "Show last play",
     last_play_help: "Displays a short text summary of the most recent play during live games (e.g., NFL).",
@@ -88,7 +86,6 @@ class CompactTeamTrackerEditor extends LitElement {
           <div class="switch-row"><ha-switch .checked="${this._config.show_league !== false}" .configValue="${"show_league"}" @change="${this._toggleOption}"></ha-switch><span>${t.show_league}</span></div>
           <div class="switch-row"><ha-switch .checked="${this._config.only_today !== false}" .configValue="${"only_today"}" @change="${this._toggleOption}"></ha-switch><span>${t.hide_finished}</span></div>
           <p class="help-text">${t.hide_finished_help}</p>
-          <div class="switch-row"><ha-switch .checked="${this._config.show_scorers === true}" .configValue="${"show_scorers"}" @change="${this._toggleOption}"></ha-switch><span>${t.show_scorers}</span></div>
           <div class="switch-row"><ha-switch .checked="${this._config.show_record === true}" .configValue="${"show_record"}" @change="${this._toggleOption}"></ha-switch><span>${t.show_sun}</span></div>
           
           <div class="switch-row"><ha-switch .checked="${this._config.show_last_play !== false}" .configValue="${"show_last_play"}" @change="${this._toggleOption}"></ha-switch><span>${t.show_last_play}</span></div>
@@ -195,6 +192,7 @@ class CompactTeamTracker extends LitElement {
     const isHome = a.team_homeaway === 'home';
     const h = { logo: isHome ? a.team_logo : a.opponent_logo, abbr: isHome ? a.team_abbr : a.opponent_abbr, score: isHome ? a.team_score : a.opponent_score, rec: isHome ? a.team_record : a.opponent_record };
     const v = { logo: isHome ? a.opponent_logo : a.team_logo, abbr: isHome ? a.opponent_abbr : a.team_abbr, score: isHome ? a.opponent_score : a.team_score, rec: isHome ? a.opponent_record : a.team_record };
+    
     const kDate = new Date(a.date);
     const timeStr = kDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     const fullDateStr = kDate.toLocaleDateString([], { day: '2-digit', month: '2-digit', year: 'numeric' });
@@ -224,9 +222,9 @@ class CompactTeamTracker extends LitElement {
           </div>
           <div class="team-box"><img src="${v.logo}" class="team-logo"><div class="name">${v.abbr}</div>${this.config.show_record && v.rec ? html`<div class="record">${v.rec}</div>` : ''}</div>
         </div>
+
         <div class="info-footer">
           <div class="venue">${a.venue}${a.location ? `, ${a.location}` : ''}</div>
-          ${this.config.show_scorers && a.scoring_plays ? html`<div class="scorers-list">${a.scoring_plays.map(p => html`<div class="scorer-item"><b>${p.team_abbr}</b>: ${p.score_play} (${p.score_time})</div>`)}</div>` : ''}
           ${showLastPlay && s === 'IN' && a.last_play ? html`<div class="play">${a.last_play}</div>` : ''}
         </div>
       </div>
@@ -282,8 +280,7 @@ class CompactTeamTracker extends LitElement {
       .kickoff-exact { font-size: 10px; opacity: 0.6; }
       .info-footer { margin-top: 10px; padding: 8px 12px 0; border-top: 1px solid var(--divider-color); text-align: center; font-size: 10px; opacity: 0.7; }
       .venue { font-weight: bold; margin-bottom: 4px; }
-      .scorers-list { margin: 6px 0; text-align: left; font-size: 9px; display: grid; grid-template-columns: 1fr; gap: 2px; opacity: 0.9; }
-      .scorer-item { padding: 1px 4px; background: rgba(255,255,255,0.03); border-radius: 2px; }
+      .play { margin-top: 4px; font-style: italic; color: var(--primary-color); }
       .ultra-wrapper { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; }
       .ultra-team { display: flex; align-items: center; gap: 8px; flex: 1; }
       .ultra-team.right { justify-content: flex-end; }
