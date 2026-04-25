@@ -69,14 +69,14 @@ The card features a full **Graphic User Interface (GUI)** editor. No YAML coding
 
 | Option | Description |
 | :--- | :--- |
-| **Manage Teams** | Add all Team Tracker sensors you want to follow. |
-| **Priority** | Select your main team. It wins the "tie-break" if games start at the exact same time. |
-| **Show Next Only** | Limits the display to the single most relevant current or upcoming match. |
-| **Ultra-Compact Layout** | Switches to the space-saving table view. |
-| **Show League Info** | Toggle the visibility of the league logo and name in the header. |
-| **Hide Finished Matches** | Automatically hides matches from previous days to keep the dashboard clean. |
-| **List Scorers** | Displays who scored and the time of the goal. |
-| **Show Statistics (S-U-N)** | Displays the team's current season record (Wins-Draws-Losses). |
+| `entities` | **(Required)** A list of one or more team_tracker sensor entities. |
+| `priority_entity` | Select a main sensor that will be prioritized if multiple games start at the exact same time. |
+| `show_next_only` | If enabled, only the next or currently active match will be displayed. |
+| `layout` | Set to `ultra` for an even more compact one-line view of the matches. |
+| `show_league` | Toggle the display of league names and logos (e.g., German Bundesliga , UEFA Champions League, ...). |
+| `only_today` | Automatically hides finished matches from previous days at midnight. |
+| `show_record` | Displays the current win-draw-loss record (W-D-L) for both teams. |
+| `show_last_play` | **(New)** Shows a short text summary of the most recent play during live games. |
 
 ---
 
