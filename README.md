@@ -11,15 +11,15 @@ A highly customizable and space-saving Lovelace card for the [Team Tracker Integ
 
 ### Standard Card Layout
 The detailed view showing all match information, venue, and status.
-![Standard Card View](img/Screenshot_compact_team_tracker_card_1.png)
+![Standard Card View](screenshots/Screenshot_compact_team_tracker_card_1.png)
 
 ### Ultra-Compact Layout
 The space-saving table view, perfect for tracking many teams at once.
-![Ultra-Compact View](img/Screenshot_compact_team_tracker_card_2.png)
+![Ultra-Compact View](screenshots/Screenshot_compact_team_tracker_card_2.png)
 
 ### Live & Scoring Plays
 Example of how live matches and scorers are displayed in the footer.
-![Scorers and Live View](img/Screenshot_compact_team_tracker_card_3.png)
+![Scorers and Live View](screenshots/Screenshot_compact_team_tracker_card_3.png)
 
 ---
 
