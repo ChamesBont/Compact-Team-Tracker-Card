@@ -7,6 +7,22 @@ A highly customizable and space-saving Lovelace card for the [Team Tracker Integ
 
 ---
 
+## 📸 Screenshots
+
+### Standard Card Layout
+The detailed view showing all match information, venue, and status.
+![Standard Card View](img/Screenshot_compact_team_tracker_card_1.png)
+
+### Ultra-Compact Layout
+The space-saving table view, perfect for tracking many teams at once.
+![Ultra-Compact View](img/Screenshot_compact_team_tracker_card_2.png)
+
+### Live & Scoring Plays
+Example of how live matches and scorers are displayed in the footer.
+![Scorers and Live View](img/Screenshot_compact_team_tracker_card_3.png)
+
+---
+
 ## ✨ Features
 
 * **Two Layout Modes:** Toggle between the detailed **Standard Card View** and the minimalist **Ultra-Compact Layout** (table view).
@@ -59,3 +75,10 @@ The card features a full **Graphic User Interface (GUI)** editor. No YAML coding
 ## 📋 Requirements
 
 This card is a frontend display and requires the [Team Tracker Integration](https://github.com/vasqued2/ha-teamtracker) to be installed via HACS first. 
+
+---
+
+## 🤝 Acknowledgments
+
+* This project was developed with the significant assistance of **Gemini**, Google's AI collaborator, which helped in coding, refining, and documenting this card.
+* Special thanks to the Home Assistant community for the inspiration to create a more compact sport tracking solution.
