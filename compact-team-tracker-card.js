@@ -1,4 +1,4 @@
-console.log("!!! TEAM TRACKER v2.0.3 !!!");
+console.log("!!! TEAM TRACKER v2.0.5 !!!");
 
 const LitElement = Object.getPrototypeOf(customElements.get("ha-panel-lovelace"));
 const html = LitElement.prototype.html;
@@ -20,7 +20,8 @@ const LANG = {
     hide_finished_help: "Versteckt Spiele vom Vortag automatisch um Mitternacht, damit nur der aktuelle Spieltag sichtbar bleibt.",
     show_sun: "Statistiken (S-U-N) anzeigen",
     show_last_play: "Letzten Spielzug anzeigen",
-    last_play_help: "Zeigt bei Live-Spielen (z.B. NFL) eine kurze Textzusammenfassung des letzten Spielzugs an.",
+    last_play_marquee: "Lauftext für letzten Spielzug",
+    last_play_help: "Zeigt bei Live-Spielen eine Textzusammenfassung des letzten Spielzugs an.",
     scheduled: "Geplant",
     finished: "Beendet",
     live: "LIVE"
@@ -39,7 +40,8 @@ const LANG = {
     hide_finished_help: "Automatically hides matches from previous days at midnight to keep the dashboard clean.",
     show_sun: "Show statistics (W-D-L)",
     show_last_play: "Show last play",
-    last_play_help: "Displays a short text summary of the most recent play during live games (e.g., NFL).",
+    last_play_marquee: "Use marquee for last play",
+    last_play_help: "Displays a text summary of the most recent play during live games.",
     scheduled: "Scheduled",
     finished: "Finished",
     live: "LIVE"
@@ -89,6 +91,7 @@ class CompactTeamTrackerEditor extends LitElement {
           <div class="switch-row"><ha-switch .checked="${this._config.show_record === true}" .configValue="${"show_record"}" @change="${this._toggleOption}"></ha-switch><span>${t.show_sun}</span></div>
           
           <div class="switch-row"><ha-switch .checked="${this._config.show_last_play !== false}" .configValue="${"show_last_play"}" @change="${this._toggleOption}"></ha-switch><span>${t.show_last_play}</span></div>
+          <div class="switch-row"><ha-switch .checked="${this._config.last_play_marquee === true}" .configValue="${"last_play_marquee"}" @change="${this._toggleOption}"></ha-switch><span>${t.last_play_marquee}</span></div>
           <p class="help-text">${t.last_play_help}</p>
         </div>
       </div>
@@ -199,6 +202,7 @@ class CompactTeamTracker extends LitElement {
 
     const showLeague = this.config.show_league !== false;
     const showLastPlay = this.config.show_last_play !== false;
+    const marqueeEnabled = this.config.last_play_marquee === true;
 
     return html`
       <div class="card-wrapper">
@@ -225,7 +229,11 @@ class CompactTeamTracker extends LitElement {
 
         <div class="info-footer">
           <div class="venue">${a.venue}${a.location ? `, ${a.location}` : ''}</div>
-          ${showLastPlay && s === 'IN' && a.last_play ? html`<div class="play">${a.last_play}</div>` : ''}
+          ${showLastPlay && s === 'IN' && a.last_play ? html`
+            <div class="play-container ${marqueeEnabled ? 'marquee' : ''}">
+              <div class="play">${a.last_play}</div>
+            </div>
+          ` : ''}
         </div>
       </div>
     `;
@@ -247,7 +255,7 @@ class CompactTeamTracker extends LitElement {
         <div class="ultra-info">
           ${s === 'PRE' 
             ? html`<span class="ultra-main-text">${shortDateStr}</span><span class="ultra-subtext">${timeStr}</span>` 
-            : html`<span class="ultra-score ${s === 'IN' ? 'live-text' : ''}">${h.score}:${v.score}</span><div class="ultra-subtext"><span>${shortDateStr}</span><span>${s === 'IN' ? a.clock : t.finished}</span></div>`
+            : html`<span class="ultra-score live-text-large">${h.score}:${v.score}</span><div class="ultra-subtext"><span>${s === 'IN' ? a.clock : t.finished}</span></div>`
           }
         </div>
         <div class="ultra-team right"><span class="ultra-abbr">${v.abbr}</span><img src="${v.logo}" class="ultra-logo"></div>
@@ -262,6 +270,7 @@ class CompactTeamTracker extends LitElement {
       .header-bg { background: rgba(255, 255, 255, 0.08); padding: 8px 12px; margin-bottom: 8px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
       .header { display: flex; justify-content: space-between; align-items: center; font-size: 10px; font-weight: bold; }
       .header.no-league { justify-content: center; }
+      .league-box { display: flex; align-items: center; }
       .league-logo { width: 18px; height: 18px; object-fit: contain; margin-right: 6px; }
       .live-status { color: #e74c3c; display: flex; align-items: center; }
       .status-post { opacity: 0.7; }
@@ -280,7 +289,20 @@ class CompactTeamTracker extends LitElement {
       .kickoff-exact { font-size: 10px; opacity: 0.6; }
       .info-footer { margin-top: 10px; padding: 8px 12px 0; border-top: 1px solid var(--divider-color); text-align: center; font-size: 10px; opacity: 0.7; }
       .venue { font-weight: bold; margin-bottom: 4px; }
-      .play { margin-top: 4px; font-style: italic; color: var(--primary-color); }
+      
+      .play-container { width: 100%; overflow: hidden; white-space: nowrap; position: relative; margin-top: 4px; }
+      .play { display: inline-block; color: var(--primary-text-color); font-style: normal; }
+      
+      .marquee .play {
+        padding-left: 100%;
+        animation: marquee 15s linear infinite;
+      }
+      
+      @keyframes marquee {
+        0% { transform: translate(0, 0); }
+        100% { transform: translate(-100%, 0); }
+      }
+
       .ultra-wrapper { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; }
       .ultra-team { display: flex; align-items: center; gap: 8px; flex: 1; }
       .ultra-team.right { justify-content: flex-end; }
@@ -288,8 +310,8 @@ class CompactTeamTracker extends LitElement {
       .ultra-abbr { font-size: 14px; font-weight: 800; }
       .ultra-info { flex: 1.2; text-align: center; display: flex; flex-direction: column; line-height: 1.2; }
       .ultra-score, .ultra-main-text { font-size: 18px; font-weight: 900; }
+      .live-text-large { font-size: 22px; font-weight: 900; color: #e74c3c; }
       .ultra-subtext { font-size: 10px; opacity: 0.7; font-weight: bold; display: flex; flex-direction: column; }
-      .live-text { color: #e74c3c; }
       .live-border { background: rgba(231, 76, 60, 0.05); }
       @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
     `;
