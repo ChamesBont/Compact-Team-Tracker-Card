@@ -15,6 +15,10 @@ The detailed view showing all match information, venue, and status.
 
 ### Ultra-Compact Layout
 The space-saving table view, perfect for tracking many teams at once.
+![Ultra-Compact View](screenshots/Screenshot_compact_team_tracker_card_2.png)
+
+### Visual Editor
+Multiple options for customization.
 ![Ultra-Compact View](screenshots/Screenshot_compact_team_tracker_card_3.png)
 
 ---
