@@ -4,7 +4,6 @@ A highly customizable and space-saving Lovelace card for the [Team Tracker Integ
 
 ![Version](https://img.shields.io/badge/version-2.0.0-blue.svg?style=flat-square)
 ![HACS](https://img.shields.io/badge/HACS-Custom-orange.svg?style=flat-square)
-![License](https://img.shields.io/badge/license-MIT-green.svg?style=flat-square)
 
 ---
 
