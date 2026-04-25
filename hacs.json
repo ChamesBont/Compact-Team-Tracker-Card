@@ -1,5 +1,6 @@
 {
   "name": "Compact Team Tracker Card",
+  "type": "lovelace",
   "render_readme": true,
   "filename": "Compact-Team-Tracker-Card.js"
 }
