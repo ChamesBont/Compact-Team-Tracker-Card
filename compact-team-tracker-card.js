@@ -24,6 +24,7 @@ const LANG = {
     show_last_play: "Letzten Spielzug anzeigen",
     last_play_help: "Zeigt bei Live-Spielen eine Textzusammenfassung des letzten Spielzugs an.",
     last_play_marquee: "Lauftext für letzten Spielzug nutzen",
+    no_entities: "Bitte füge in der Konfiguration Teams hinzu, um die Vorschau zu sehen.",
     scheduled: "Geplant",
     finished: "Beendet",
     live: "LIVE"
@@ -46,6 +47,7 @@ const LANG = {
     show_last_play: "Show last play",
     last_play_help: "Displays a text summary of the most recent play during live games.",
     last_play_marquee: "Use marquee for last play",
+    no_entities: "Please add teams in the configuration to see the preview.",
     scheduled: "Scheduled",
     finished: "Finished",
     live: "LIVE"
@@ -184,6 +186,16 @@ class CompactTeamTracker extends LitElement {
     if (!this.hass) return html``;
     const t = this._lang;
     const entities = this.config.entities || [];
+    
+    // Falls keine Entitäten vorhanden sind (neue Karte), zeige Platzhalter
+    if (entities.length === 0) {
+      return html`
+        <ha-card style="padding: 16px; text-align: center; color: var(--secondary-text-color); font-style: italic;">
+          ${t.no_entities}
+        </ha-card>
+      `;
+    }
+
     const states = entities.map(id => this.hass.states[id]).filter(s => s && s.attributes);
     const prioId = this.config.priority_entity;
 
@@ -218,7 +230,9 @@ class CompactTeamTracker extends LitElement {
       displayList = [filteredList[0]];
     }
 
-    if (displayList.length === 0) return html``;
+    if (displayList.length === 0) {
+       return html`<ha-card style="padding: 16px; text-align: center; opacity: 0.5;">(Keine aktuellen Spiele gefunden)</ha-card>`;
+    }
 
     return html`
       <ha-card>
