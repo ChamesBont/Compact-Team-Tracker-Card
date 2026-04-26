@@ -1,4 +1,4 @@
-console.log("!!! TEAM TRACKER v2.0.6-beta.2 !!!");
+console.log("!!! TEAM TRACKER v2.0.6-beta.3 !!!");
 
 const LitElement = Object.getPrototypeOf(customElements.get("ha-panel-lovelace"));
 const html = LitElement.prototype.html;
@@ -69,7 +69,8 @@ class CompactTeamTrackerEditor extends LitElement {
   }
 
   _filterEntity(stateObj) {
-    const attr = stateObj.attributes.attribution || "";
+    if (!stateObj) return false;
+    const attr = stateObj.attributes?.attribution || "";
     return attr.toLowerCase().includes("espn") || stateObj.entity_id.includes("team_tracker");
   }
 
@@ -150,7 +151,8 @@ class CompactTeamTrackerEditor extends LitElement {
   }
   _addEntity(ev) {
     if (!ev.detail.value) return;
-    this._updateConfig({ ...this._config, entities: [...this._config.entities, ev.detail.value] });
+    const newEnts = this._config.entities ? [...this._config.entities, ev.detail.value] : [ev.detail.value];
+    this._updateConfig({ ...this._config, entities: newEnts });
     ev.target.value = "";
   }
   _removeEntity(idx) { this._updateConfig({ ...this._config, entities: this._config.entities.filter((_, i) => i !== idx) }); }
@@ -174,8 +176,13 @@ customElements.define("compact-team-tracker-editor", CompactTeamTrackerEditor);
 // --- KARTE ---
 class CompactTeamTracker extends LitElement {
   static get properties() { return { hass: {}, config: {} }; }
-  setConfig(config) { this.config = config; }
+  
+  setConfig(config) { 
+    this.config = config; 
+  }
+  
   static getConfigElement() { return document.createElement("compact-team-tracker-editor"); }
+  static getStubConfig() { return { entities: [], layout: "standard", show_league: true }; }
 
   get _lang() {
     const l = this.hass?.language || 'de';
@@ -187,7 +194,6 @@ class CompactTeamTracker extends LitElement {
     const t = this._lang;
     const entities = this.config.entities || [];
     
-    // Falls keine Entitäten vorhanden sind (neue Karte), zeige Platzhalter
     if (entities.length === 0) {
       return html`
         <ha-card style="padding: 16px; text-align: center; color: var(--secondary-text-color); font-style: italic;">
@@ -196,9 +202,15 @@ class CompactTeamTracker extends LitElement {
       `;
     }
 
-    const states = entities.map(id => this.hass.states[id]).filter(s => s && s.attributes);
-    const prioId = this.config.priority_entity;
+    const states = entities
+      .map(id => this.hass.states[id])
+      .filter(s => s && s.attributes && s.attributes.team_abbr); // Validierung der Team-Tracker Struktur
 
+    if (states.length === 0) {
+       return html`<ha-card style="padding: 16px; text-align: center; opacity: 0.5;">(Warte auf Sensordaten...)</ha-card>`;
+    }
+
+    const prioId = this.config.priority_entity;
     const sortedStates = [...states].sort((a, b) => {
       const timeA = new Date(a.attributes.date).getTime();
       const timeB = new Date(b.attributes.date).getTime();
@@ -228,10 +240,6 @@ class CompactTeamTracker extends LitElement {
     let displayList = filteredList;
     if (this.config.show_next_only && filteredList.length > 0) {
       displayList = [filteredList[0]];
-    }
-
-    if (displayList.length === 0) {
-       return html`<ha-card style="padding: 16px; text-align: center; opacity: 0.5;">(Keine aktuellen Spiele gefunden)</ha-card>`;
     }
 
     return html`
