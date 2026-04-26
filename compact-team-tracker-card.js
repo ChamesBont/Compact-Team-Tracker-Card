@@ -1,4 +1,4 @@
-console.log("!!! TEAM TRACKER v2.0.5 !!!");
+console.log("!!! TEAM TRACKER v2.0.6-beta.1 !!!");
 
 const LitElement = Object.getPrototypeOf(customElements.get("ha-panel-lovelace"));
 const html = LitElement.prototype.html;
@@ -246,7 +246,7 @@ class CompactTeamTracker extends LitElement {
         <div class="info-footer">
           <div class="venue">${a.venue}${a.location ? `, ${a.location}` : ''}</div>
           ${showLastPlay && s === 'IN' && a.last_play ? html`
-            <div class="play-container ${marqueeEnabled ? 'marquee' : ''}">
+            <div class="play-container ${marqueeEnabled ? 'marquee' : 'multiline'}">
               <div class="play">${a.last_play}</div>
             </div>
           ` : ''}
@@ -305,7 +305,9 @@ class CompactTeamTracker extends LitElement {
       .kickoff-exact { font-size: 10px; opacity: 0.6; }
       .info-footer { margin-top: 10px; padding: 8px 12px 0; border-top: 1px solid var(--divider-color); text-align: center; font-size: 10px; opacity: 0.7; }
       .venue { font-weight: bold; margin-bottom: 4px; }
-      .play-container { width: 100%; overflow: hidden; white-space: nowrap; position: relative; margin-top: 4px; }
+      .play-container { width: 100%; position: relative; margin-top: 4px; }
+      .play-container.marquee { overflow: hidden; white-space: nowrap; }
+      .play-container.multiline { white-space: normal; }
       .play { display: inline-block; color: var(--primary-text-color); font-style: normal; }
       .marquee .play { padding-left: 100%; animation: marquee 15s linear infinite; }
       @keyframes marquee { 0% { transform: translate(0, 0); } 100% { transform: translate(-100%, 0); } }
